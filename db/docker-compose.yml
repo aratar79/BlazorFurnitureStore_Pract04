@@ -1,0 +1,16 @@
+version: "3.2"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password123!!"
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql-server-linux-data:/var/opt/mssql
+volumes:
+  mssql-server-linux-data:
