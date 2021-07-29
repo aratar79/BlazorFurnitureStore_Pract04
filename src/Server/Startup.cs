@@ -1,3 +1,4 @@
+using Blazor.FurnitureStore.Repositories;
 using Blazor.FurnitureStore.Server.Data;
 using Blazor.FurnitureStore.Server.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -5,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Data;
 using System.Linq;
 
 namespace Blazor.FurnitureStore.Server
@@ -40,6 +43,11 @@ namespace Blazor.FurnitureStore.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            string dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddSingleton<IDbConnection>( (sp) => new SqlConnection(dbConnectionString));
+
+            services.AddScoped<IProductCategoryRespository, ProductCategoryRespository>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
