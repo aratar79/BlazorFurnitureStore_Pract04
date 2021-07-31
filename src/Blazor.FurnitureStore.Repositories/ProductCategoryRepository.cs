@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Blazor.FurnitureStore.Repositories
 {
-    public class ProductCategoryRespository : IProductCategoryRespository
+    public class ProductCategoryRepository : IProductCategoryRepository
     {
         private readonly IDbConnection _dbConneciton;
-        public ProductCategoryRespository(IDbConnection dbConneciton)
+        public ProductCategoryRepository(IDbConnection dbConneciton)
         {
             _dbConneciton = dbConneciton;
         }

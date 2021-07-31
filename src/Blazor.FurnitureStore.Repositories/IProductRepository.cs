@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Blazor.FurnitureStore.Repositories
 {
-    public interface IProductCategoryRespository
+    public interface IProductRepository
     {
-        Task<IEnumerable<ProductCategory>> GetAll();
+        Task<IEnumerable<Product>> GetByCategory(int productCategoryId);
     }
 }

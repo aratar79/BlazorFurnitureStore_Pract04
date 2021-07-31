@@ -7,11 +7,22 @@
 @if (productCategories != null && Order != null)
 {
     <EditForm Model="@Order">
-        <InputSelect class="form-control col-sm-5" @bind-Value="@Order.ProductCategoryId">
+        <label>Categories</label>
+        <InputSelect class="form-control col-sm-5"
+                     Value="@Order.ProductCategoryId"
+                     ValueChanged="@((int productCategoryId) => ProductCategoryHasChange(productCategoryId))"
+                     ValueExpression="@(()=>Order.ProductCategoryId)">
             @foreach (var item in productCategories)
             {
                 <option value="@item.Id">@item.Name</option>
             }
+        </InputSelect>
+        <label>Products</label>
+        <InputSelect class="form-control col-sm-5" @bind-Value="@ProductId">
+            @foreach (var item in products)
+                {
+                <option value="@item.Id">@item.Name</option>
+                }
         </InputSelect>
     </EditForm>
 }
@@ -24,18 +35,33 @@ else
 
     public Order Order;
     public IEnumerable<ProductCategory> productCategories;
+    public IEnumerable<Product> products;
     public string Message { get; set; }
+    public int ProductId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Order = new Order();
+            Order = new Order() { ProductCategoryId = 1};
             productCategories = await ProductCategoryService.GetAll();
+            await LoadProducts(Order.ProductCategoryId);
         }
         catch (Exception e)
         {
             Message = e.Message;
         }
+    }
+
+    protected async Task ProductCategoryHasChange(int productCategoryId)
+    {
+        Order.ProductCategoryId = productCategoryId;
+        if (Order.ProductCategoryId > 0)
+            await LoadProducts(Order.ProductCategoryId);
+    }
+
+    private async Task LoadProducts(int productCategoryId)
+    {
+        // products = await ProductCategoryService.GetByCategory(productCategoryId);
     }
 }

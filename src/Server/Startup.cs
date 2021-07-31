@@ -47,7 +47,8 @@ namespace Blazor.FurnitureStore.Server
             string dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddSingleton<IDbConnection>( (sp) => new SqlConnection(dbConnectionString));
 
-            services.AddScoped<IProductCategoryRespository, ProductCategoryRespository>();
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
