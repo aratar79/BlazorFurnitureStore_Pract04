@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Blazor.FurnitureStore.Repositories;
+using Blazor.FurnitureStore.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,5 +13,17 @@ namespace Blazor.FurnitureStore.Server.Controllers
     [ApiController]
     public class ProductCategoryController : ControllerBase
     {
+        private readonly IProductCategoryRespository _productCategoryRespository;
+
+        public ProductCategoryController(IProductCategoryRespository productCategoryRespository)
+        {
+            _productCategoryRespository = productCategoryRespository;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<ProductCategory>> GetAll()
+        {
+            return await _productCategoryRespository.GetAll();
+        }
     }
 }
