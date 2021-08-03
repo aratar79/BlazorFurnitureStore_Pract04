@@ -27,6 +27,8 @@ namespace Blazor.FurnitureStore.Client
 
             builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IClientStoreService, ClientStoreService>();
 
             builder.Services.AddApiAuthorization();
 

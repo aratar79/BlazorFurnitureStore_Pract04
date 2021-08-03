@@ -8,18 +8,17 @@ using System.Threading.Tasks;
 
 namespace Blazor.FurnitureStore.Client.Services
 {
-    public class OrderService : IOrderService
+    public class ClientStoreService : IClientStoreService
     {
         private readonly HttpClient _httpClient;
-
-        public OrderService(HttpClient httpClient)
+        public ClientStoreService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
-        public async Task SaveOrder(Order order)
+        public async Task<IEnumerable<ClientStore>> GetAll()
         {
-            if (order.Id == 0)
-                await _httpClient.PostAsJsonAsync<Order>($"api/order/", order);
+            var result = await _httpClient.GetFromJsonAsync<IEnumerable<ClientStore>>($"api/Clients");
+            return result;
         }
     }
 }

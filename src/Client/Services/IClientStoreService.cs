@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Blazor.FurnitureStore.Client.Services
 {
-    public interface IOrderService
+    public interface IClientStoreService
     {
-        Task SaveOrder(Order order);
+        Task<IEnumerable<ClientStore>> GetAll();
     }
 }
