@@ -1,5 +1,6 @@
 ﻿@page "/orderdetails"
 @inject IProductCategoryService ProductCategoryService
+@inject IProductService ProductService
 
 <h3>OrderDetails</h3>
 <p>@Message</p>
@@ -17,12 +18,13 @@
                 <option value="@item.Id">@item.Name</option>
             }
         </InputSelect>
+        <br />
         <label>Products</label>
         <InputSelect class="form-control col-sm-5" @bind-Value="@ProductId">
             @foreach (var item in products)
-                {
+            {
                 <option value="@item.Id">@item.Name</option>
-                }
+            }
         </InputSelect>
     </EditForm>
 }
@@ -43,7 +45,7 @@ else
     {
         try
         {
-            Order = new Order() { ProductCategoryId = 1};
+            Order = new Order() { ProductCategoryId = 1 };
             productCategories = await ProductCategoryService.GetAll();
             await LoadProducts(Order.ProductCategoryId);
         }
@@ -62,6 +64,7 @@ else
 
     private async Task LoadProducts(int productCategoryId)
     {
-        // products = await ProductCategoryService.GetByCategory(productCategoryId);
+        var result = await ProductService.GetByCategory(productCategoryId);
+        products = result;
     }
 }
