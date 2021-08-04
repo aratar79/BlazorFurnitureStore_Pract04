@@ -15,7 +15,7 @@ namespace Blazor.FurnitureStore.Shared
         {
             get 
             { 
-                return FirstName + ", "  + LastName; 
+                return LastName + ", "  + FirstName; 
             }
         }
 

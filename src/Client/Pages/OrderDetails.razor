@@ -2,13 +2,15 @@
 @inject IProductCategoryService ProductCategoryService
 @inject IProductService ProductService
 @inject IClientStoreService ClientStoreService
+@inject IOrderService OrderService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
 
+<p>Hola que se - > @Message</p>
 
-<p>@Message</p>
-
-@if (productCategories != null && Order != null) 
+@if (productCategories != null && Order != null)
 {
-    <EditForm Model="@Order">
+    <EditForm Model="@Order" OnValidSubmit="SaveOrder">
 
         <div class="card">
             <h5 class="card-header">Order Details</h5>
@@ -20,7 +22,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <input type="submit" class="btn btn-success" value="Save" />
-                            <input type="button" class="btn btn secondary" value="Cancel" />
+                            <input type="button" class="btn btn secondary" value="Cancel" @onclick="Cancel" />
                         </div>
                         <div class="col-md-4 mb-3">
 
@@ -39,7 +41,7 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label>Client</label>
-                            <InputSelect class="form-control" @bind-Value="ClientId">
+                            <InputSelect class="form-control" @bind-Value="@Order.ClientId">
                                 @foreach (var client in clients)
                                     {
                                     <option value="@client.Id">@client.FullName</option>
@@ -94,16 +96,20 @@ else
     public IEnumerable<ClientStore> clients;
     public string Message { get; set; }
     public int ProductId { get; set; }
-    public int ClientId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Order = new Order() { ProductCategoryId = 1 };
+            Order = new Order()
+            {
+                ProductCategoryId = 1,
+                OrderDate = DateTime.Today,
+                DeliveryDate = DateTime.Today.AddDays(7)
+            };
             productCategories = await ProductCategoryService.GetAll();
             await LoadProducts(Order.ProductCategoryId);
-            await LoadClients();
+            clients = await ClientStoreService.GetAll(); ;
         }
         catch (Exception e)
         {
@@ -125,8 +131,19 @@ else
         products = result;
     }
 
-    private async Task LoadClients()
+    protected async Task SaveOrder()
     {
-        clients = await ClientStoreService.GetAll();
+        await OrderService.SaveOrder(Order);
     }
+
+    private void NavigationHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected void Cancel()
+    {
+        NavigationHome();
+    }
+
 }

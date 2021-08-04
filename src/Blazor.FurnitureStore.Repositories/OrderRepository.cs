@@ -15,17 +15,19 @@ namespace Blazor.FurnitureStore.Repositories
 
         public OrderRepository(IDbConnection dbConnection)
         {
-            dbConnection = _dbConnection;
+            _dbConnection = dbConnection;
         }
 
         public async Task<bool> InsertOrder(Order order)
         {
-            var Sql = @"INSERT INTO Orders (OrderNumber, ClientId, OrderDate, DeliveryDate, Total)
-                      VALUES (@OrderNumber, @ClientId, @OrderDate, @DeliveryDate, @Total)";
+            var sql = @"
+                        INSERT INTO Orders (OrderNumber, ClientId, OrderDate, DeliveryDate, Total)
+                        VALUES (@OrderNumber, @ClientId, @OrderDate, @DeliveryDate, @Total)
+                        ";
 
-            var result = await _dbConnection.ExecuteAsync(Sql, 
-                new 
-                { 
+            var result = await _dbConnection.ExecuteAsync(sql,
+                new
+                {
                     order.OrderNumber,
                     order.ClientId,
                     order.OrderDate,
