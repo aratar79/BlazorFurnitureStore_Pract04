@@ -21,7 +21,7 @@ namespace Blazor.FurnitureStore.Server.Controllers
             _productRepository = productRepository;
         }
         [HttpGet("getbycategory/{productCategoryId}")]
-        public async Task<IEnumerable<Product>> GetByCategiry(int productCategoryId)
+        public async Task<IEnumerable<Product>> GetByCategory(int productCategoryId)
         {
             return await _productRepository.GetByCategory(productCategoryId);
         }

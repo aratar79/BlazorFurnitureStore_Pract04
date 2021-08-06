@@ -3,12 +3,13 @@
 @inject IProductService ProductService
 @inject IClientStoreService ClientStoreService
 @inject IOrderService OrderService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @attribute [Authorize]
 
-<p>Hola que se - > @Message</p>
+<p>@Message</p>
 
-@if (productCategories != null && Order != null)
+@if (clients != null && Order != null)
 {
     <EditForm Model="@Order" OnValidSubmit="SaveOrder">
 
@@ -59,28 +60,36 @@
                             <InputNumber class="form-control" @bind-Value="@Order.Total" />
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-lg-12 mt-3 text-center">
+                            <input type="button" class="btn btn-secondary" value="Add Product" @onclick="AddProduct" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <label>Categories</label>
-        <InputSelect class="form-control col-sm-5"
-                     Value="@Order.ProductCategoryId"
-                     ValueChanged="@((int productCategoryId) => ProductCategoryHasChange(productCategoryId))"
-                     ValueExpression="@(()=>Order.ProductCategoryId)">
-            @foreach (var item in productCategories)
-            {
-                <option value="@item.Id">@item.Name</option>
-            }
-        </InputSelect>
-        <br />
-        <label>Products</label>
-        <InputSelect class="form-control col-sm-5" @bind-Value="@ProductId">
-            @foreach (var item in products)
-                {
-                <option value="@item.Id">@item.Name</option>
-                }
-        </InputSelect>
+        @if (Order.Products != null && Order.Products.Any())
+        {
+            <MudTable Items="@Order.Products" Hover="true" Breakpoint="Breakpoint.Sm" Striped="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Products</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Price</MudTh>
+                    <MudTh>Quantity</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="ProductContext">
+                    <MudTd DataLabel="Name">@ProductContext.Name</MudTd>
+                    <MudTd DataLabel="Price">@ProductContext.Price</MudTd>
+                    <MudTd DataLabel="Quantity">@ProductContext.Quantity</MudTd>
+                    <MudTd DataLabel=""></MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+
     </EditForm>
 }
 else
@@ -91,11 +100,9 @@ else
 @code {
 
     public Order Order;
-    public IEnumerable<ProductCategory> productCategories;
-    public IEnumerable<Product> products;
     public IEnumerable<ClientStore> clients;
     public string Message { get; set; }
-    public int ProductId { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,28 +114,13 @@ else
                 OrderDate = DateTime.Today,
                 DeliveryDate = DateTime.Today.AddDays(7)
             };
-            productCategories = await ProductCategoryService.GetAll();
-            await LoadProducts(Order.ProductCategoryId);
+
             clients = await ClientStoreService.GetAll(); ;
         }
         catch (Exception e)
         {
             Message = e.Message;
         }
-    }
-
-    protected async Task ProductCategoryHasChange(int productCategoryId)
-    {
-        Order.ProductCategoryId = productCategoryId;
-        if (Order.ProductCategoryId > 0)
-            await LoadProducts(Order.ProductCategoryId);
-
-    }
-
-    private async Task LoadProducts(int productCategoryId)
-    {
-        var result = await ProductService.GetByCategory(productCategoryId);
-        products = result;
     }
 
     protected async Task SaveOrder()
@@ -144,6 +136,21 @@ else
     protected void Cancel()
     {
         NavigationHome();
+    }
+
+    protected async Task AddProduct()
+    {
+        var dialog = DialogService.Show<ProductDetails>("Hola que ase");
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            var product = (Product)result.Data;
+
+            if (Order.Products == null) Order.Products = new List<Product>();
+
+            Order.Products.Add(product);
+        }
     }
 
 }

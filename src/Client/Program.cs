@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MudBlazor.Services;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -31,6 +32,8 @@ namespace Blazor.FurnitureStore.Client
             builder.Services.AddScoped<IClientStoreService, ClientStoreService>();
 
             builder.Services.AddApiAuthorization();
+
+            builder.Services.AddMudServices();
 
             await builder.Build().RunAsync();
         }
