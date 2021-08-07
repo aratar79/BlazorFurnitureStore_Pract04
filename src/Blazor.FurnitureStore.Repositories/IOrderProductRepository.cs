@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Blazor.FurnitureStore.Repositories
 {
-    public interface IOrderRepository
+    public interface IOrderProductRepository
     {
-        Task<bool> InsertOrder(Order order);
-        Task<int> GetNextNumber();
-        Task<int> GetNextId();
+        Task<bool> InsertOrderProduct(int orderId, Product product);
     }
 }

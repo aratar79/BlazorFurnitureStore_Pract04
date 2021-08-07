@@ -5,6 +5,7 @@
 @inject IOrderService OrderService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject ISnackbar SnackBar
 @attribute [Authorize]
 
 <p>@Message</p>
@@ -18,15 +19,9 @@
             <div class="card-body">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
-
-                        </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-lg-12 mb-3 mt-3 text-center">
                             <input type="submit" class="btn btn-success" value="Save" />
-                            <input type="button" class="btn btn secondary" value="Cancel" @onclick="Cancel" />
-                        </div>
-                        <div class="col-md-4 mb-3">
-
+                            <input type="button" class="btn btn-secondary" value="Cancel" @onclick="Cancel" />
                         </div>
                     </div>
                     <div class="row">
@@ -57,7 +52,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Total</label>
-                            <InputNumber class="form-control" @bind-Value="@Order.Total" />
+                            <input type="text" class="form-control text-right" readonly="readonly" value="@Order.Total.ToString("C2")" />
                         </div>
                     </div>
                     <div class="row">
@@ -85,7 +80,15 @@
                     <MudTd DataLabel="Name">@ProductContext.Name</MudTd>
                     <MudTd DataLabel="Price">@ProductContext.Price</MudTd>
                     <MudTd DataLabel="Quantity">@ProductContext.Quantity</MudTd>
-                    <MudTd DataLabel=""></MudTd>
+                    <MudTd DataLabel="">
+                        <MudFab OnClick="@(() => RemoveProduct(ProductContext.Id))"
+                                Color="Color.Warning"
+                                Icon="@Icons.Material.Filled.DeleteForever"
+                                Size="Size.Small"
+                                IconSize="Size.Small">
+
+                        </MudFab>
+                    </MudTd>
                 </RowTemplate>
             </MudTable>
         }
@@ -110,6 +113,7 @@ else
         {
             Order = new Order()
             {
+                OrderNumber = await OrderService.GetNextNumber(),
                 ProductCategoryId = 1,
                 OrderDate = DateTime.Today,
                 DeliveryDate = DateTime.Today.AddDays(7)
@@ -126,6 +130,7 @@ else
     protected async Task SaveOrder()
     {
         await OrderService.SaveOrder(Order);
+        NavigationHome();
     }
 
     private void NavigationHome()
@@ -151,6 +156,12 @@ else
 
             Order.Products.Add(product);
         }
+    }
+
+    protected void RemoveProduct(int Id)
+    {
+        Order.Products.RemoveAll(p => p.Id == Id);
+        SnackBar.Add("Pruduct deleted", Severity.Error, a => a.VisibleStateDuration = 150);
     }
 
 }

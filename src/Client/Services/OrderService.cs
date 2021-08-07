@@ -21,5 +21,8 @@ namespace Blazor.FurnitureStore.Client.Services
             if (order.Id == 0)
                 await _httpClient.PostAsJsonAsync<Order>($"api/order/", order);
         }
+
+        public async Task<int> GetNextNumber() => await _httpClient.GetFromJsonAsync<int>($"api/order/GetNextNumber");
     }
+
 }

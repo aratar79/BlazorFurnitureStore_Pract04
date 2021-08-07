@@ -25,5 +25,10 @@ namespace Blazor.FurnitureStore.Server.Controllers
         {
             return await _productRepository.GetByCategory(productCategoryId);
         }
+        [HttpGet("{Id}")]
+        public async Task<Product> GetProductById(int Id)
+        {
+            return await _productRepository.GetProductById(Id);
+        }
     }
 }

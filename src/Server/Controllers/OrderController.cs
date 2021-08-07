@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Blazor.FurnitureStore.Server.Controllers
 {
@@ -16,10 +17,16 @@ namespace Blazor.FurnitureStore.Server.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderProductRepository _orderProructRepository;
 
-        public OrderController(IOrderRepository orderRepository)
+        public OrderController
+            (
+                IOrderRepository orderRepository,
+                IOrderProductRepository orderProductRepository
+            )
         {
             _orderRepository = orderRepository;
+            _orderProructRepository = orderProductRepository;
         }
 
         [HttpPost]
@@ -32,9 +39,21 @@ namespace Blazor.FurnitureStore.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _orderRepository.InsertOrder(order);
-
+            using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled)) 
+            {
+                order.Id = await _orderRepository.GetNextId();
+                await _orderRepository.InsertOrder(order);
+                foreach (var product in order.Products)
+                {
+                    await _orderProructRepository.InsertOrderProduct(order.Id, product);
+                }
+                scope.Complete();
+            }
+                            
             return NoContent();
         }
+
+        [HttpGet("GetNextNumber")]
+        public async Task<int> GetNextNumber() => await _orderRepository.GetNextNumber();
     }
 }

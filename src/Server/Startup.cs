@@ -51,6 +51,7 @@ namespace Blazor.FurnitureStore.Server
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IOrderProductRepository, OrderProductRepository>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

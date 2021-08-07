@@ -9,5 +9,6 @@ namespace Blazor.FurnitureStore.Client.Services
     public interface IProductService
     {
         Task<IEnumerable<Product>> GetByCategory(int productCategoryId);
+        Task<Product> GetProductById(int id);
     }
 }

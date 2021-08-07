@@ -20,5 +20,10 @@ namespace Blazor.FurnitureStore.Client.Services
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<Product>>($"api/product/GetByCategory/{productCategoryId}");
         }
+
+        public async Task<Product> GetProductById(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<Product>($"api/product/{id}/");
+        }
     }
 }

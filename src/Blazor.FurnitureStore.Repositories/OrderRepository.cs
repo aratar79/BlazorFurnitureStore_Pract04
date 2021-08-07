@@ -18,6 +18,20 @@ namespace Blazor.FurnitureStore.Repositories
             _dbConnection = dbConnection;
         }
 
+        public async Task<int> GetNextNumber()
+        {
+            var Sql = @"SELECT MAX(OrderNumber) + 1 FROM Orders";
+            return await _dbConnection.QueryFirstAsync<int>(Sql, new { });
+
+        }
+
+        public async Task<int> GetNextId()
+        {
+            var Sql = @"SELECT IDENT_CURRENT('Orders') + 1";
+            return await _dbConnection.QueryFirstAsync<int>(Sql, new { });
+
+        }
+
         public async Task<bool> InsertOrder(Order order)
         {
             var sql = @"

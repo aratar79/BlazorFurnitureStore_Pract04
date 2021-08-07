@@ -22,6 +22,13 @@ namespace Blazor.FurnitureStore.Repositories
             var result = await _dbConneciton.QueryAsync<Product>(Sql, new { Id = productCategoryId });
             return result;
         }
+
+        public async Task<Product> GetProductById(int Id)
+        {
+            var Sql = @"SELECT Id, Name, Price, CategoryId AS ProductCategoryId FROM Products WHERE Id = @Id";
+            var result = await _dbConneciton.QueryFirstOrDefaultAsync<Product>(Sql, new { Id = Id });
+            return result;
+        }
     }
 }
 
