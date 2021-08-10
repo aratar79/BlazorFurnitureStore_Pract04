@@ -10,5 +10,7 @@ namespace Blazor.FurnitureStore.Repositories
     public interface IOrderProductRepository
     {
         Task<bool> InsertOrderProduct(int orderId, Product product);
+        Task<IEnumerable<Product>> GetByOrder(int orderId);
+        Task<bool> DeleteOrderProductByOrder(int orderId);
     }
 }

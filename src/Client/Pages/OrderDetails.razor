@@ -1,4 +1,5 @@
 ﻿@page "/orderdetails"
+@page "/orderDetails/{id:int}"
 @inject IProductCategoryService ProductCategoryService
 @inject IProductService ProductService
 @inject IClientStoreService ClientStoreService
@@ -106,20 +107,28 @@ else
     public IEnumerable<ClientStore> clients;
     public string Message { get; set; }
 
+    [Parameter] public int id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Order = new Order()
+            if (id > 0)
             {
-                OrderNumber = await OrderService.GetNextNumber(),
-                ProductCategoryId = 1,
-                OrderDate = DateTime.Today,
-                DeliveryDate = DateTime.Today.AddDays(7)
-            };
+                Order = await OrderService.GetOrderById(id);
+            }
+            else
+            {
+                Order = new Order()
+                {
+                    OrderNumber = await OrderService.GetNextNumber(),
+                    ProductCategoryId = 1,
+                    OrderDate = DateTime.Today,
+                    DeliveryDate = DateTime.Today.AddDays(7)
+                };
+            }
 
-            clients = await ClientStoreService.GetAll(); ;
+            clients = await ClientStoreService.GetAll();
         }
         catch (Exception e)
         {
