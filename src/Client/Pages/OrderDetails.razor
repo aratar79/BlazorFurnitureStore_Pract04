@@ -67,7 +67,7 @@
 
         @if (Order.Products != null && Order.Products.Any())
         {
-            <MudTable Items="@Order.Products" Hover="true" Breakpoint="Breakpoint.Sm" Striped="true">
+            <MudTable class="mt-4" Items="@Order.Products" Hover="true" Breakpoint="Breakpoint.Sm" Striped="true">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Products</MudText>
                 </ToolBarContent>
